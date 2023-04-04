@@ -44,7 +44,7 @@ public class GuessingGame {
             if (output.contains("You got it" ) || output.contains("over")){
                 loopShouldContinue = false;
             }
-            
+
         } while (loopShouldContinue);
     }
 }
