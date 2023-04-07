@@ -27,20 +27,29 @@ public class Main {
 
         Matcher peopleMat = Employee.PEOPLE_PAT.matcher(people);
 
-        Programmer coder = new Programmer("");
-        coder.cook("Hamburger");
+//        Programmer coder = new Programmer("");
+//        coder.cook("Hamburger");
 
         int totalSalaries =0;
         IEmployee employee = null;
         while (peopleMat.find()) {
             employee = Employee.createEmployee(peopleMat.group());
+            if (employee instanceof Programmer){
+                System.out.println(((Programmer) employee).getIq());
+            } else if (employee.getClass().equals(Manager.class)) {
+
+            }else if (employee instanceof Analyst) {
+
+            } else if (employee.getClass().equals(CEO.class)){
+
+            } else {
+                System.out.println("Default output");
+            }
             System.out.println(employee.toString());
             totalSalaries += employee.getSalary();
         }
         NumberFormat moneyFormatter = NumberFormat.getCurrencyInstance();
         System.out.printf("The total payout should be %s%n", moneyFormatter.format(totalSalaries));
-
-
     }
 
 }
