@@ -3,7 +3,6 @@ package org.aztech.employees;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.DuplicateFormatFlagsException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,7 +34,7 @@ public abstract class Employee implements IEmployee{
         }
     }
 
-    public static final IEmployee createEmployee(String employeeText){
+    public static IEmployee createEmployee(String employeeText){
         Matcher peopleMat = Employee.PEOPLE_PAT.matcher(employeeText);
         if (peopleMat.find()){
             return switch (peopleMat.group("role")){
@@ -43,13 +42,7 @@ public abstract class Employee implements IEmployee{
                 case "Manager" -> new Manager(employeeText);
                 case "Analyst" -> new Analyst(employeeText);
                 case "CEO" -> new CEO(employeeText);
-                default -> () -> 0;  //lambda
-//                default -> new Employee(){  // anonymous class
-//                    @Override
-//                    public int getSalary() {
-//                        return 0;
-//                    }
-//                };
+                default -> new DummyNobody();
             };
         }else{
             return new DummyNobody();

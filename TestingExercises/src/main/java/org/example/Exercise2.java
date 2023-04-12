@@ -61,6 +61,7 @@ public class Exercise2 {
         List<String> array = new ArrayList<>();
         while (mat.find()){
             array.add(mat.group("name"));
+
         }
         return array;
     }

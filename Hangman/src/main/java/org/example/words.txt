@@ -1,0 +1,10 @@
+cat
+dog
+pen
+cup
+hat
+car
+sun
+key
+bed
+box
