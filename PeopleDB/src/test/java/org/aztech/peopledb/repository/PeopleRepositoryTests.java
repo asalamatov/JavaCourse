@@ -1,6 +1,5 @@
 package org.aztech.peopledb.repository;
 
-import org.assertj.core.api.FactoryBasedNavigableListAssert;
 import org.aztech.peopledb.model.Person;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,7 +22,7 @@ public class PeopleRepositoryTests {
     @BeforeEach
     void setUp() throws SQLException {
         connection = DriverManager.getConnection("jdbc:h2:/home/azamat/Desktop/DBeaverSQL/peopletest".replace("~", System.getProperty("user.home")));
-        connection.setAutoCommit(false);
+        connection.setAutoCommit(true);
         repo = new PeopleRepository(connection);
     }
 
@@ -48,4 +48,18 @@ public class PeopleRepositoryTests {
         Person savedPerson2 = repo.save(bobby);
         assertThat(savedPerson1.getId()).isNotEqualTo(savedPerson2.getId());
     }
+
+    @Test
+    public void canFindPersonByID() {
+        Person savedPerson = repo.save(new Person("test", "jackson", ZonedDateTime.of(1880, 11, 15, 15, 15, 0, 0, ZoneId.of("-6"))));
+        Person foundPerson = repo.findByID(savedPerson.getId()).get();
+        assertThat(foundPerson).isEqualTo(savedPerson);
+    }
+
+    @Test
+    public void testPersonIdNotFound() {
+        Optional<Person> foundPerson = repo.findByID(-1L);
+        assertThat(foundPerson).isEmpty();
+    }
+
 }
