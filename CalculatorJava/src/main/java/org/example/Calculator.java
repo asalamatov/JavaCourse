@@ -3,9 +3,14 @@ package org.example;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Calculator implements ActionListener {
 
+    /**
+     * declaring Swing units, and buttons for GUI
+     */
     JFrame frame;
     JTextField textField;
     JButton[] numberButtons = new JButton[10];
@@ -17,11 +22,23 @@ public class Calculator implements ActionListener {
 
     JPanel panel;
 
+    /**
+     * setting fonts: Big font - for numbers and usual operations
+     * small font for sin, cos, ln
+     */
     Font myBigFont = new Font("Ink free", Font.BOLD, 20);
     Font mySmallFont = new Font("Ink free", Font.BOLD, 12);
     double num1=0, num2=0, result=0;
     char operator;
 
+
+    /**
+     * Constructor:
+     *          sets frame
+     *          puts buttons
+     *          look-n-feel of the applications,
+     *          no functionality
+     */
     Calculator(){
         frame = new JFrame("Calculator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,7 +62,7 @@ public class Calculator implements ActionListener {
         powButton = new JButton("^");
         sinButton = new JButton("sin");
         cosButton = new JButton("cos");
-        logButton = new JButton("log");
+        logButton = new JButton("ln");
 
 
 
@@ -64,13 +81,13 @@ public class Calculator implements ActionListener {
         functionButtons[12] = logButton;
 
 
-        for (int i=0; i<9; i++){
+        for (int i=0; i<10; i++){
             functionButtons[i].setFont(myBigFont);
             functionButtons[i].addActionListener(this);
             functionButtons[i].setFocusable(false);
         }
 
-        for (int i=9; i<13; i++){
+        for (int i=10; i<13; i++){
             functionButtons[i].setFont(mySmallFont);
             functionButtons[i].addActionListener(this);
             functionButtons[i].setFocusable(false);
@@ -123,10 +140,13 @@ public class Calculator implements ActionListener {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        Calculator calc = new Calculator();
-    }
-
+    /**
+     * actionPerformed function:
+     *                  logic and functionality of the project
+     *                  calculations depending on the operation
+     *                  after clicking the operation button, the input field is cleaned
+     * @param e the event to be processed
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         for (int i=0; i<10; i++) {
@@ -159,7 +179,7 @@ public class Calculator implements ActionListener {
         }
         if (e.getSource() == powButton){
             num1 = Double.parseDouble(textField.getText());
-            operator = 'p'; //power
+            operator = '^'; //power
             textField.setText("");
         }
         if (e.getSource() == sinButton){
@@ -189,7 +209,7 @@ public class Calculator implements ActionListener {
                 case '/':
                     result = num1/num2;
                     break;
-                case 'p':
+                case '^':
                     result = Math.pow(num1, num2);
                     break;
                 case 's':
@@ -203,8 +223,32 @@ public class Calculator implements ActionListener {
                     break;
             }
             textField.setText(String.valueOf(result));
+
+            /**
+             * writing the equations to file
+             * concatenated to the file: CalculationResults.txt
+             */
+            try {
+                FileWriter resultsFile = new FileWriter("CalculationResults.txt", true);
+                if (operator != 's' && operator != 'c'  && operator != 'l' ){
+                    resultsFile.append(num1 + " " + operator + " " + num2 + " = "  + result + "\n");
+                } else if (operator == 's') {
+                    resultsFile.append("sin" + " " + num2 + " = "  + result + "\n");
+                } else if (operator == 'c') {
+                    resultsFile.append("cos" + " " + num2 + " = "  + result + "\n");
+                } else if (operator == 'l') {
+                    resultsFile.append("ln" + " " + num2 + " = "  + result + "\n");
+                }
+
+                resultsFile.close();
+            } catch (IOException ex) {
+                System.out.println(ex.getMessage());
+            }
             num1=result;
         }
+        /**
+         * special buttons: Clear, Delete, Negate
+         */
         if (e.getSource() == clrButton){
             textField.setText("");
         }
@@ -221,5 +265,42 @@ public class Calculator implements ActionListener {
             textField.setText(String.valueOf(temp));
         }
 
+    }
+
+    /**
+     * Getters and Setters
+     * @return
+     */
+
+    public double getNum1() {
+        return num1;
+    }
+
+    public void setNum1(double num1) {
+        this.num1 = num1;
+    }
+
+    public double getNum2() {
+        return num2;
+    }
+
+    public void setNum2(double num2) {
+        this.num2 = num2;
+    }
+
+    public double getResult() {
+        return result;
+    }
+
+    public void setResult(double result) {
+        this.result = result;
+    }
+
+    public char getOperator() {
+        return operator;
+    }
+
+    public void setOperator(char operator) {
+        this.operator = operator;
     }
 }
